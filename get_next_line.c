@@ -1,0 +1,184 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: WTower <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/16 01:52:24 by WTower            #+#    #+#             */
+/*   Updated: 2023/06/16 19:51:06 by WTower           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "get_next_line.h"
+
+static void free_storage(t_storage *storage)
+{
+	storage->size = 0;
+	storage->capacity = 0;
+	storage->newline_found = 0;
+	storage->malloc_failed = 0;
+	free(storage->storage);
+}
+
+static void delet_line_in_storage(t_storage *storage)
+{
+	int index;
+	int deleter;
+	int new_size;
+	char *new_storage;
+
+	index = 0;
+	deleter = 0;
+	while (storage->storage[index] != '\n' && index < storage->size)
+		index++;
+	index++;
+	new_storage = malloc(storage->size - index);
+	if (new_storage == NULL)
+	{
+		storage->malloc_failed = 1;
+		return;
+	}
+	new_size = storage->size - index;
+	while (index < storage->size)
+	{
+		new_storage[deleter] = storage->storage[index];
+		deleter++;
+		index++;
+	}
+	free(storage->storage);
+	storage->storage = new_storage;
+	storage->size = new_size;
+}
+
+static char *fill_line(t_storage *storage)
+{
+	int index;
+	int filler;
+	char *line;
+
+	index = 0;
+	filler = 0;
+	while (storage->storage[index] != '\n' && index < storage->size)
+		index++;
+	line = malloc(index + 2);
+	if (line == NULL)
+		return NULL;
+	while (filler < index)
+	{
+		line[filler] = storage->storage[filler];
+		filler++;
+	}
+	line[filler] = '\n';
+	line[filler + 1] = '\0';
+	storage->newline_found--;
+	return line;
+}
+
+static void test_storage(t_storage *storage)
+{
+	int index;
+
+	index = 0;
+	while (index < storage->size)
+	{
+		if (storage->storage[index] == '\n')
+			storage->newline_found++;
+		index++;
+	}
+}
+
+static void just_fill_storage(t_storage *storage, t_buffer buffer)
+{
+	int index;
+
+	index = 0;
+	while (index < buffer.bytesread)
+	{
+		storage->storage[storage->size + index] = buffer.buffer[index];
+		index++;
+	}
+}
+
+static void double_storage_size(t_storage *storage)
+{
+	char *new_storage;
+	int index;
+
+	storage->capacity *= 2;
+	index = 0;
+	new_storage = malloc(storage->capacity);
+	if (new_storage == NULL)
+	{
+		storage->malloc_failed = 1;
+		return;
+	}
+	while (index < storage->size)
+	{
+		new_storage[index] = storage->storage[index];
+		index++;
+	}
+	free(storage->storage);
+	storage->storage = new_storage;
+}
+
+static void first_fill_storage(t_storage *storage, t_buffer buffer)
+{
+	int	index;
+
+	index = 0;
+	storage->storage = malloc(buffer.bytesread);
+	if (storage->storage == NULL)
+		storage->malloc_failed = 1;
+	while (index < buffer.bytesread)
+	{
+		storage->storage[index] = buffer.buffer[index];
+		index++;
+	}
+	storage->size = buffer.bytesread;
+	storage->capacity = buffer.bytesread;
+}
+
+static void fill_storage(t_storage *storage, t_buffer buffer)
+{
+	if (storage->capacity == 0)
+	{
+		first_fill_storage(storage, buffer);
+	}
+	else if (storage->capacity < storage->size + buffer.bytesread)
+	{
+		double_storage_size(storage);
+		just_fill_storage(storage, buffer);
+	}
+	else
+		just_fill_storage(storage, buffer);
+}
+
+char	*get_next_line(int fd)
+{
+	char *line;
+	t_buffer buffer;
+	static t_storage storage;
+
+	if (fd == -1 || BUFFER_SIZE <= 0 || storage.malloc_failed == 1)
+		return (NULL);
+	while (!storage.newline_found)
+	{
+		buffer.bytesread = read(fd, buffer.buffer, BUFFER_SIZE);
+		if (buffer.bytesread == -1 || buffer.bytesread == 0)
+		{
+			free_storage(&storage);
+			return (NULL);
+		}
+		fill_storage(&storage, buffer);
+		if (storage.malloc_failed == 1)
+			return NULL;
+		test_storage(&storage);
+	}
+	if (storage.newline_found)
+	{
+		line = fill_line(&storage);
+		delet_line_in_storage(&storage);
+	}
+	return (line);
+}
