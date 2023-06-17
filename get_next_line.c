@@ -6,7 +6,7 @@
 /*   By: WTower <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/16 01:52:24 by WTower            #+#    #+#             */
-/*   Updated: 2023/06/17 08:21:56 by WTower           ###   ########.fr       */
+/*   Updated: 2023/06/17 08:53:17 by WTower           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ static char *fill_line(t_storage *storage)
 
 	index = 0;
 	filler = 0;
-	while (storage->storage[index] != '\n' && index < storage->size)
+	while (storage->storage[index] != '\n' && index < storage->size - 1)
 		index++;
 	if (storage->storage[index] == '\n')
 		index++;
