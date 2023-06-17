@@ -6,7 +6,7 @@
 /*   By: WTower <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/16 01:52:24 by WTower            #+#    #+#             */
-/*   Updated: 2023/06/17 05:27:19 by WTower           ###   ########.fr       */
+/*   Updated: 2023/06/17 07:30:58 by WTower           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,14 @@ static void delet_line_in_storage(t_storage *storage)
 	if (storage->storage[index] == '\n')
 		index++;
 	new_size = storage->size - index;
+	if (new_size == 0)
+	{
+		free(storage->storage);
+		storage->storage = NULL;
+		storage->capacity = new_size;
+		storage->size = new_size;
+		return;
+	}
 	new_storage = malloc(new_size);
 	if (new_storage == NULL)
 	{
@@ -111,15 +119,17 @@ static void just_fill_storage(t_storage *storage, t_buffer buffer)
 		storage->storage[storage->size + index] = buffer.buffer[index];
 		index++;
 	}
-	storage->size += index;
+	storage->size += buffer.bytesread;
 }
 
-static void double_storage_size(t_storage *storage)
+static void double_storage_size(t_storage *storage, t_buffer buffer)
 {
 	char *new_storage;
 	int index;
 
 	storage->capacity *= 2;
+	if (storage->capacity < buffer.bytesread + storage->size)
+		storage->capacity = buffer.bytesread + storage->size;
 	index = 0;
 	new_storage = malloc(storage->capacity);
 	if (new_storage == NULL)
@@ -159,7 +169,7 @@ static void fill_storage(t_storage *storage, t_buffer buffer)
 		first_fill_storage(storage, buffer);
 	else if (storage->capacity < storage->size + buffer.bytesread)
 	{
-		double_storage_size(storage);
+		double_storage_size(storage, buffer);
 		just_fill_storage(storage, buffer);
 	}
 	else
