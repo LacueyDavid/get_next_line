@@ -1,6 +1,3 @@
-test
-oui
-ok
-
-
-a
+la premiere phrase
+	la deuxieme phrase
+ la troisieme

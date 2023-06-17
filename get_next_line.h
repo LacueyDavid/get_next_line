@@ -6,14 +6,14 @@
 /*   By: WTower <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/16 02:00:21 by WTower            #+#    #+#             */
-/*   Updated: 2023/06/16 18:25:34 by WTower           ###   ########.fr       */
+/*   Updated: 2023/06/17 03:47:18 by WTower           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
-# define BUFFER_SIZE 1024
+//# define BUFFER_SIZE 1024
 
 # include <stdlib.h>
 # include <unistd.h>
