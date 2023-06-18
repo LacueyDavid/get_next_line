@@ -6,7 +6,7 @@
 /*   By: WTower <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/16 02:00:21 by WTower            #+#    #+#             */
-/*   Updated: 2023/06/17 09:26:27 by WTower           ###   ########.fr       */
+/*   Updated: 2023/06/18 08:20:23 by WTower           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,6 @@
 
 # include <stdlib.h>
 # include <unistd.h>
-# include <string.h> // test
-# include <stdio.h>  // test
-# include <fcntl.h>  // test
 
 typedef struct storage {
 	char	*storage;
@@ -36,5 +33,11 @@ typedef struct buffer
 }			t_buffer;
 
 char	*get_next_line(int fd);
+void	free_storage(t_storage *storage);
+int		new_value_incorrect(int new_size, t_storage *storage,
+								char **new_storage);
+void	delet_line_in_storage(t_storage *storage);
+char	*special_fill_line(t_storage *storage);
+char	*fill_line(t_storage *storage);
 
 #endif
