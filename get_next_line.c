@@ -6,7 +6,7 @@
 /*   By: WTower <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/16 01:52:24 by WTower            #+#    #+#             */
-/*   Updated: 2023/06/21 19:52:26 by dlacuey          ###   ########.fr       */
+/*   Updated: 2023/06/21 21:01:23 by dlacuey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,11 @@ static char	*the_next_line(int fd, t_buffer *buffer, t_storage *storage)
 	{
 		storage->newlines_counted = 1;
 		storage->newlines[0] = storage->size - 1;
+	}
+	else if (storage->size > storage->index && storage->newlines_index >= storage->newlines_counted)
+	{
+		storage->newlines_counted++;
+		storage->newlines[storage->newlines_counted - 1] = storage->size - 1;
 	}
 	if (storage->storage_full == 1)
 		free(buffer->buffer);

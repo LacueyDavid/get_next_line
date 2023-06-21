@@ -6,7 +6,7 @@
 /*   By: WTower <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 08:14:13 by WTower            #+#    #+#             */
-/*   Updated: 2023/06/21 20:06:40 by dlacuey          ###   ########.fr       */
+/*   Updated: 2023/06/21 21:05:49 by dlacuey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,6 @@ char	*fill_line(t_storage *storage)
 		line_begin = storage->index;
 		line_end = storage->newlines[storage->newlines_index] + 1;
 		line_size = line_end - line_begin;
-		// printf("line_size: %d\n", line_size);
-		// printf("line_begin: %d\n", line_begin);
 		if (line_size < 1)
 			return NULL;
 		line = malloc(line_size + 1);

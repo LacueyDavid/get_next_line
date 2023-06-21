@@ -6,14 +6,17 @@
 /*   By: WTower <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/16 02:00:21 by WTower            #+#    #+#             */
-/*   Updated: 2023/06/21 20:23:05 by dlacuey          ###   ########.fr       */
+/*   Updated: 2023/06/21 21:05:44 by dlacuey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
-# define BUFFER_SIZE 1
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 42
+# endif
+
 # define STORAGE_SIZE 1024
 # define STORAGE_NEWLINES 1
 
