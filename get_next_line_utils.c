@@ -6,13 +6,11 @@
 /*   By: WTower <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 08:14:13 by WTower            #+#    #+#             */
-/*   Updated: 2023/06/21 21:05:49 by dlacuey          ###   ########.fr       */
+/*   Updated: 2023/06/22 01:03:59 by dlacuey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-/////// free everything ////////////////////////////////////////////////////////
 
 void	free_everything(t_storage *storage)
 {
@@ -30,39 +28,105 @@ void	free_everything(t_storage *storage)
 	storage->newlines_capacity = 0;
 }
 
-/////// fill line /////////////////////////////////////////////////////////////
+void	double_newlines_size(t_storage *storage)
+{
+	int	*new_newlines;
+	int	index;
+
+	index = 0;
+	new_newlines = malloc(sizeof(int) * (storage->newlines_capacity * 2));
+	if (new_newlines == NULL)
+	{
+		storage->malloc_failed = 1;
+		return ;
+	}
+	while (index < storage->newlines_counted)
+	{
+		new_newlines[index] = storage->newlines[index];
+		index++;
+	}
+	free(storage->newlines);
+	storage->newlines = new_newlines;
+	storage->newlines_capacity *= 2;
+}
+
+void	double_storage_size(t_storage *storage, t_buffer *buffer)
+{
+	char	*new_storage;
+	int		index;
+
+	storage->capacity *= 2;
+	if (storage->capacity < buffer->bytesread + storage->size)
+		storage->capacity = buffer->bytesread + storage->size;
+	index = 0;
+	new_storage = malloc(storage->capacity);
+	if (new_storage == NULL)
+	{
+		storage->malloc_failed = 1;
+		return ;
+	}
+	while (index < storage->size)
+	{
+		new_storage[index] = storage->storage[index];
+		index++;
+	}
+	free(storage->storage);
+	storage->storage = new_storage;
+}
+
+void	fill_storage(t_storage *storage, t_buffer *buffer)
+{
+	int	index;
+	int	storage_size;
+
+	index = 0;
+	storage_size = storage->size;
+	if (storage->capacity < storage->size + buffer->bytesread)
+		double_storage_size(storage, buffer);
+	if (storage->malloc_failed == 1)
+		return ;
+	while (index < buffer->bytesread)
+	{
+		storage->storage[storage_size + index] = buffer->buffer[index];
+		if (storage->storage[storage_size + index] == '\n')
+		{
+			storage->newlines[storage->newlines_counted] = storage_size + index;
+			storage->newlines_counted++;
+			if (storage->newlines_counted >= storage->newlines_capacity)
+				double_newlines_size(storage);
+			if (storage->malloc_failed == 1)
+				return ;
+		}
+		index++;
+	}
+	storage->size += buffer->bytesread;
+}
 
 char	*fill_line(t_storage *storage)
 {
-	char *line;
-	int line_begin;
-	int line_end;
-	int line_size;
-	int index;
+	t_line	line;
 
-	index = 0;
-	line = NULL;
+	line.i = 0;
+	line.string = NULL;
 	if (storage->newlines_index < storage->newlines_counted)
 	{
-		line_begin = storage->index;
-		line_end = storage->newlines[storage->newlines_index] + 1;
-		line_size = line_end - line_begin;
-		if (line_size < 1)
-			return NULL;
-		line = malloc(line_size + 1);
-		if (line == NULL)
+		line.line_begin = storage->index;
+		storage->index = storage->newlines[storage->newlines_index] + 1;
+		if (storage->index - line.line_begin < 1)
+			return (NULL);
+		line.string = malloc(storage->index - line.line_begin + 1);
+		if (line.string == NULL)
 		{
 			storage->malloc_failed = 1;
 			return (NULL);
 		}
-		while (index < line_size)
+		while (line.i < storage->index - line.line_begin)
 		{
-			line[index] = storage->storage[line_begin + index];
-			index++;
+			line.string[line.i] = storage->storage[line.line_begin + line.i];
+			line.i++;
 		}
-		line[index] = '\0';
-		storage->index = line_end;
+		line.string[line.i] = '\0';
 		storage->newlines_index++;
 	}
-	return (line);
+	return (line.string);
 }

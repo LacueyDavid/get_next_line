@@ -6,7 +6,7 @@
 /*   By: WTower <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/16 02:00:21 by WTower            #+#    #+#             */
-/*   Updated: 2023/06/21 21:05:44 by dlacuey          ###   ########.fr       */
+/*   Updated: 2023/06/22 01:03:59 by dlacuey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ typedef struct storage {
 	int			newline_found;
 	int			malloc_failed;
 	int			key;
-	int 		*newlines;
+	int			*newlines;
 	int			newlines_index;
 	int			newlines_capacity;
 	int			newlines_counted;
@@ -49,15 +49,18 @@ typedef struct buffer
 typedef struct line_infos
 {
 	char	*string;
-	int		size;
-	int		last;
+	int		line_begin;
+	int		i;
 }			t_line;
 
+void	double_newlines_size(t_storage *storage);
+void	double_storage_size(t_storage *storage, t_buffer *buffer);
+void	fill_storage(t_storage *storage, t_buffer *buffer);
 void	free_everything(t_storage *storage);
 char	*get_next_line(int fd);
 void	free_storage(t_storage *storage);
 int		new_value_incorrect(int new_size, t_storage *storage,
-								char **new_storage);
+			char **new_storage);
 void	delet_line_in_storage(t_storage *storage);
 char	*last_fill_line(t_storage *storage);
 char	*fill_line(t_storage *storage);
