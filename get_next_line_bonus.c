@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: WTower <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/16 01:52:24 by WTower            #+#    #+#             */
-/*   Updated: 2023/06/22 15:29:45 by dlacuey          ###   ########.fr       */
+/*   Updated: 2023/06/22 15:53:57 by dlacuey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static void	eof(t_storage *storage)
 {
@@ -68,7 +68,7 @@ static t_storage *actual_fd_storage(int fd, t_storages *storages)
 		}
 	}
 	i = 0;
-	while (i < MAP_SIZE)
+	while (i < MAP_SIZE && storages->size > 0)
 	{
 		if (storages->map[i].key == fd)
 			return &(storages->map[i].storage);
@@ -104,12 +104,12 @@ char	*get_next_line(int fd)
 			|| storage->newlines == NULL || BUFFER_SIZE < 1)
 		{
 			free(buffer.buffer);
-			free_everything(&storages);
+			free_everything(storage);
 			return (NULL);
 		}
 	}
 	line = the_next_line(fd, &buffer, storage);
 	if (storage->malloc_failed == 1 || line == NULL)
-		free_everything(&storages);
+		free_everything(storage);
 	return (line);
 }

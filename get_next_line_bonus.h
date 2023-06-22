@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: WTower <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/16 02:00:21 by WTower            #+#    #+#             */
-/*   Updated: 2023/06/22 15:09:20 by dlacuey          ###   ########.fr       */
+/*   Updated: 2023/06/22 15:51:47 by dlacuey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ typedef struct line_infos
 void	double_newlines_size(t_storage *storage);
 void	double_storage_size(t_storage *storage, t_buffer *buffer);
 void	fill_storage(t_storage *storage, t_buffer *buffer);
-void	free_everything(t_storages *storage);
+void	free_everything(t_storage *storage);
 char	*get_next_line(int fd);
 int		new_value_incorrect(int new_size, t_storage *storage,
 			char **new_storage);
