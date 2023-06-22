@@ -6,7 +6,7 @@
 /*   By: WTower <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/16 01:52:24 by WTower            #+#    #+#             */
-/*   Updated: 2023/06/22 15:29:45 by dlacuey          ###   ########.fr       */
+/*   Updated: 2023/06/22 16:06:58 by dlacuey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,9 @@ static char	*the_next_line(int fd, t_buffer *buffer, t_storage *storage)
 	return (fill_line(storage));
 }
 
-static t_storage *actual_fd_storage(int fd, t_storages *storages)
+static	t_storage	*actual_fd_storage(int fd, t_storages *storages)
 {
-	int i;
+	int		i;
 
 	if (storages->size == 0)
 	{
@@ -68,10 +68,10 @@ static t_storage *actual_fd_storage(int fd, t_storages *storages)
 		}
 	}
 	i = 0;
-	while (i < MAP_SIZE)
+	while (i < MAP_SIZE && storages->size > 0)
 	{
 		if (storages->map[i].key == fd)
-			return &(storages->map[i].storage);
+			return (&(storages->map[i].storage));
 		i++;
 	}
 	i = 0;
@@ -79,37 +79,42 @@ static t_storage *actual_fd_storage(int fd, t_storages *storages)
 		i++;
 	storages->map[i].key = fd;
 	storages->size += 1;
-	return &(storages->map[i].storage);
+	return (&(storages->map[i].storage));
+}
+
+static	int	init_environnement_failed(t_buffer *buffer, t_storage *storage)
+{
+	buffer->buffer = malloc(BUFFER_SIZE);
+	storage->storage = malloc(STORAGE_SIZE);
+	storage->newlines = malloc(STORAGE_NEWLINES * sizeof(int));
+	storage->newlines_capacity = STORAGE_NEWLINES;
+	storage->capacity = STORAGE_SIZE;
+	storage->key = 1;
+	if (buffer->buffer == NULL || storage->storage == NULL
+		|| storage->newlines == NULL || BUFFER_SIZE < 1)
+	{
+		free(buffer->buffer);
+		free_everything(storage);
+		return (1);
+	}
+	return (0);
 }
 
 char	*get_next_line(int fd)
 {
 	t_buffer			buffer;
-	static	t_storages	storages;
+	static t_storages	storages;
 	t_storage			*storage;
 	char				*line;
 
 	if (fd < 0)
-		return NULL;
+		return (NULL);
 	storage = actual_fd_storage(fd, &storages);
 	if (storage->storage == NULL)
-	{
-		buffer.buffer = malloc(BUFFER_SIZE);
-		storage->storage = malloc(STORAGE_SIZE);
-		storage->newlines = malloc(STORAGE_NEWLINES * sizeof(int));
-		storage->newlines_capacity = STORAGE_NEWLINES;
-		storage->capacity = STORAGE_SIZE;
-		storage->key = 1;
-		if (buffer.buffer == NULL || fd < 0 || storage->storage == NULL
-			|| storage->newlines == NULL || BUFFER_SIZE < 1)
-		{
-			free(buffer.buffer);
-			free_everything(&storages);
+		if (init_environnement_failed(&buffer, storage))
 			return (NULL);
-		}
-	}
 	line = the_next_line(fd, &buffer, storage);
 	if (storage->malloc_failed == 1 || line == NULL)
-		free_everything(&storages);
+		free_everything(storage);
 	return (line);
 }

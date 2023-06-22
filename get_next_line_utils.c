@@ -6,36 +6,26 @@
 /*   By: WTower <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 08:14:13 by WTower            #+#    #+#             */
-/*   Updated: 2023/06/22 15:22:58 by dlacuey          ###   ########.fr       */
+/*   Updated: 2023/06/22 16:05:37 by dlacuey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-void	free_everything(t_storages *storages)
+void	free_everything(t_storage *storage)
 {
-	int i;
-
-	i = 0;
-	while (i < MAP_SIZE)
-	{
-		if (storages->map[i].key != -1)
-		{
-			free(storages->map[i].storage.storage);
-			free(storages->map[i].storage.newlines);
-			storages->map[i].storage.storage = NULL;
-			storages->map[i].storage.newlines = NULL;
-			storages->map[i].storage.size = 0;
-			storages->map[i].storage.index = 0;
-			storages->map[i].storage.capacity = 0;
-			storages->map[i].storage.newline_found = 0;
-			storages->map[i].storage.malloc_failed = 0;
-			storages->map[i].storage.newlines_index = 0;
-			storages->map[i].storage.newlines_counted = 0;
-			storages->map[i].storage.newlines_capacity = 0;
-		}
-		i++;
-	}
+	free(storage->storage);
+	free(storage->newlines);
+	storage->storage = NULL;
+	storage->newlines = NULL;
+	storage->size = 0;
+	storage->index = 0;
+	storage->capacity = 0;
+	storage->newline_found = 0;
+	storage->malloc_failed = 0;
+	storage->newlines_index = 0;
+	storage->newlines_counted = 0;
+	storage->newlines_capacity = 0;
 }
 
 void	double_newlines_size(t_storage *storage)
