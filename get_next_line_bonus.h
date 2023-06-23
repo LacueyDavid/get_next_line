@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: WTower <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: dlacuey <dlacuey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/16 02:00:21 by WTower            #+#    #+#             */
-/*   Updated: 2023/06/22 15:58:16 by dlacuey          ###   ########.fr       */
+/*   Created: 2023/06/23 10:57:20 by dlacuey           #+#    #+#             */
+/*   Updated: 2023/06/23 10:57:22 by dlacuey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@
 
 # include <stdlib.h>
 # include <unistd.h>
-# include <stdio.h>
 
 typedef struct storage
 {
@@ -67,15 +66,11 @@ typedef struct line_infos
 	int		i;
 }			t_line;
 
+void	free_everything(t_storage *storage);
 void	double_newlines_size(t_storage *storage);
 void	double_storage_size(t_storage *storage, t_buffer *buffer);
 void	fill_storage(t_storage *storage, t_buffer *buffer);
-void	free_everything(t_storage *storage);
-char	*get_next_line(int fd);
-int		new_value_incorrect(int new_size, t_storage *storage,
-			char **new_storage);
-void	delet_line_in_storage(t_storage *storage);
-char	*last_fill_line(t_storage *storage);
 char	*fill_line(t_storage *storage);
+char	*get_next_line(int fd);
 
 #endif
